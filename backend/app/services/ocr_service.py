@@ -128,16 +128,21 @@ class OCRService:
     def _mock_extraction(self, file_bytes: bytes) -> Tuple[Dict, float]:
         """Mock extraction for development/testing - achieves >90% accuracy on synthetic data"""
         import random
+        from datetime import datetime, timedelta
 
         # Simulate high-accuracy extraction (>90%)
         confidence = random.uniform(0.91, 0.98)
+
+        # Generate dates as datetime objects
+        invoice_date = datetime.now() - timedelta(days=random.randint(0, 30))
+        due_date = invoice_date + timedelta(days=30)
 
         mock_data = {
             "invoice_number": f"INV-{random.randint(1000, 9999)}",
             "vendor_name": random.choice(["Acme Corp", "Tech Solutions Inc", "Office Supplies Ltd"]),
             "customer_name": random.choice(["ABC Company", "XYZ Corporation", "Demo Enterprises"]),
-            "invoice_date": "2024-01-15",
-            "due_date": "2024-02-15",
+            "invoice_date": invoice_date,
+            "due_date": due_date,
             "total_amount": round(random.uniform(100, 5000), 2),
             "tax_amount": None,
             "line_items": [

@@ -27,6 +27,13 @@ async def upload_invoice(
     # Extract invoice data using OCR
     extracted_data, confidence = ocr_service.extract_invoice_data(file_bytes)
 
+    # Convert datetime objects to strings for JSON storage
+    raw_ocr_data = extracted_data.copy()
+    if raw_ocr_data.get("invoice_date") and hasattr(raw_ocr_data["invoice_date"], "isoformat"):
+        raw_ocr_data["invoice_date"] = raw_ocr_data["invoice_date"].isoformat()
+    if raw_ocr_data.get("due_date") and hasattr(raw_ocr_data["due_date"], "isoformat"):
+        raw_ocr_data["due_date"] = raw_ocr_data["due_date"].isoformat()
+
     # Create invoice record
     invoice = Invoice(
         invoice_type=invoice_type,
@@ -39,7 +46,7 @@ async def upload_invoice(
         tax_amount=extracted_data.get("tax_amount"),
         status=InvoiceStatus.PENDING_VALIDATION,
         file_url=f"/uploads/{file.filename}",
-        raw_ocr_data=extracted_data,
+        raw_ocr_data=raw_ocr_data,
         extraction_confidence=confidence,
         created_by=current_user.id
     )

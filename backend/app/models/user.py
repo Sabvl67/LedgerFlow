@@ -16,5 +16,5 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    invoices = relationship("Invoice", back_populates="created_by_user")
+    invoices = relationship("Invoice", foreign_keys="Invoice.created_by", back_populates="created_by_user")
     approvals = relationship("Approval", back_populates="approver")
